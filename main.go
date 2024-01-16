@@ -2,6 +2,8 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -14,7 +16,7 @@ type apiConfig struct {
 type weatherData struct {
 	Name string `json:"name"`
 	Main struct {
-		Kelvin float64 `json:"temp"`
+		Celsius float64 `json:"temp"`
 	} `json:"main"`
 }
 
@@ -23,7 +25,9 @@ func main() {
 
 	http.HandleFunc("/weather/", weatherHandler)
 
-	http.ListenAndServe(":8000", nil)
+	fmt.Println("Start Server on Port 800")
+
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
@@ -49,7 +53,7 @@ func query(city string) (weatherData, error) {
 		return weatherData{}, err
 	}
 
-	r, err := http.Get("http://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q" + city)
+	r, err := http.Get("http://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q=" + city)
 	if err != nil {
 		return weatherData{}, err
 	}
@@ -61,7 +65,13 @@ func query(city string) (weatherData, error) {
 		return weatherData{}, err
 	}
 
+	d.Main.Celsius = kelvinToCelcius(d.Main.Celsius)
+
 	return d, nil
+}
+
+func kelvinToCelcius(kelvin float64) float64 {
+	return kelvin - 273.15
 }
 
 func loadApiConfig(filename string) (apiConfig, error) {
