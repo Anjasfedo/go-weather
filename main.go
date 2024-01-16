@@ -27,7 +27,7 @@ func main() {
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
-
+	w.Write([]byte("Hello from Go!\n"))
 }
 
 func weatherHandler(w http.ResponseWriter, r *http.Request) {
@@ -41,6 +41,27 @@ func weatherHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application-json; charset=utf-8")
 	json.NewEncoder(w).Encode(data)
+}
+
+func query(city string) (weatherData, error) {
+	apiConfig, err := loadApiConfig(".apiConfig")
+	if err != nil {
+		return weatherData{}, err
+	}
+
+	r, err := http.Get("http://api.openweathermap.org/data/2.5/weather?APPID=" + apiConfig.OpenWeatherMapApiKey + "&q" + city)
+	if err != nil {
+		return weatherData{}, err
+	}
+
+	defer r.Body.Close()
+
+	var d weatherData
+	if err := json.NewDecoder(r.Body).Decode(&d); err != nil {
+		return weatherData{}, err
+	}
+
+	return d, nil
 }
 
 func loadApiConfig(filename string) (apiConfig, error) {
