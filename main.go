@@ -19,7 +19,28 @@ type weatherData struct {
 }
 
 func main() {
+	http.HandleFunc("/hello", helloHandler)
 
+	http.HandleFunc("/weather/", weatherHandler)
+
+	http.ListenAndServe(":8000", nil)
+}
+
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func weatherHandler(w http.ResponseWriter, r *http.Request) {
+	city := strings.SplitN(r.URL.Path, "/", 3)[2]
+
+	data, err := query(city)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application-json; charset=utf-8")
+	json.NewEncoder(w).Encode(data)
 }
 
 func loadApiConfig(filename string) (apiConfig, error) {
