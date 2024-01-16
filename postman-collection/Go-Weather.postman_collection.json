@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "09af0146-4cb0-411a-900b-5cb3f74062ce",
+		"name": "Go-Weather",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29831214"
+	},
+	"item": [
+		{
+			"name": "getWeatherByCity",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{server}}/weather/bengkulu",
+					"host": [
+						"{{server}}"
+					],
+					"path": [
+						"weather",
+						"bengkulu"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
